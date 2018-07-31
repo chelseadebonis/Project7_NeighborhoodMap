@@ -1,10 +1,12 @@
 // Enemies our player must avoid
-var Enemy = function() {
+const Enemy = function() {
     // Variables applied to each of our instances go here,
     // we've provided one for you to get started
 
     // The image/sprite for our enemies, this uses
     // a helper we've provided to easily load images
+    this.x = 0;
+    this.y = 0;
     this.sprite = 'images/enemy-bug.png';
 };
 
@@ -24,13 +26,42 @@ Enemy.prototype.render = function() {
 // Now write your own player class
 class Princess {
   constructor() {
-    this.x = 0;
-    this.y = 0;
+    this.column = 101;
+    this.row = 83;
+    this.startColumn = this.column * 2;
+    this.startRow = this.row * 5;
+    this.x = this.startColumn;
+    this.y = this.startRow;
     this.sprite = 'images/char-princess-girl.png';
   }
 
   render() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+  }
+
+  handleInput(input) {
+    switch(input) {
+      case 'left':
+      if (this.x > 0) {
+      this.x -= this.column;
+    }
+      break;
+      case 'up':
+      if (this.y > 0) {
+      this.y -= this.row;
+    }
+      break;
+      case 'right':
+      if (this.x < 404) {
+      this.x += this.column;
+    }
+      break;
+      case 'down':
+      if (this.y < 400) {
+      this.y += this.row;
+    }
+      break;
+    }
   }
 }
 // This class requires an update(), render() and
@@ -41,7 +72,12 @@ class Princess {
 // Place all enemy objects in an array called allEnemies
 // Place the player object in a variable called player
 const player = new Princess();
-
+const evil1 = new Enemy();
+//const evil2 = new Enemy();
+//const evil3 = new Enemy();
+//const evil4 = new Enemy();
+const allEnemies = [];
+allEnemies.push(evil1);
 
 // This listens for key presses and sends the keys to your
 // Player.handleInput() method. You don't need to modify this.
