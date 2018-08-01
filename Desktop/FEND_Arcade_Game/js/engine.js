@@ -13,6 +13,9 @@
  * writing app.js a little simpler to work with.
  */
 
+
+
+
 var Engine = (function(global) {
     /* Predefine the variables we'll be using within this scope,
      * create the canvas element, grab the 2D context for that canvas
@@ -66,6 +69,10 @@ var Engine = (function(global) {
         reset();
         lastTime = Date.now();
         main();
+
+        ctx.font = 'bold 20px Open Sans';
+        ctx.textAlign = 'center';
+        ctx.fillText = ('Score: ' + score, 450, 50);
     }
 
     /* This function is called by main (our game loop) and itself calls all
@@ -90,12 +97,19 @@ var Engine = (function(global) {
      * render methods.
      */
     function updateEntities(dt) {
-      //  allEnemies.forEach(function(enemy) {
-        //    enemy.update(dt);
-        //});
-      //  player.update();
+      allEnemies.forEach(function(enemy) {
+        enemy.update(dt);
+        });
+        player.update();
+        allGems.forEach(function(gem) {
+          gem.update(dt);
+        });
     }
-
+function text(text, font, x, y, color) {
+  context.fillText = (text, x, y);
+  context.fillStyle = color;
+  context.font = font;
+}
     /* This function initially draws the "game level", it will then call
      * the renderEntities function. Remember, this function is called every
      * game tick (or loop of the game engine) because that's how games work -
@@ -106,6 +120,8 @@ var Engine = (function(global) {
         /* This array holds the relative URL to the image used
          * for that particular row of the game level.
          */
+
+
         var rowImages = [
                 'images/water-block.png',   // Top row is water
                 'images/stone-block.png',   // Row 1 of 3 of stone
@@ -155,8 +171,11 @@ var Engine = (function(global) {
        allEnemies.forEach(function(enemy) {
         enemy.render();
         });
-
+        allGems.forEach(function(gem) {
+          gem.render();
+        });
         player.render();
+        gem.render();
     }
 
     /* This function does nothing but it could have been a good place to
@@ -177,7 +196,8 @@ var Engine = (function(global) {
         'images/grass-block.png',
         'images/enemy-bug.png',
         'images/char-boy.png',
-        'images/char-princess-girl.png'
+        'images/char-princess-girl.png',
+        'images/Gem Blue.png'
     ]);
     Resources.onReady(init);
 
