@@ -5,16 +5,19 @@ import Book from '../Components/Book';
 import RecBooks from '../Components/RecBooks';
 
 class SearchScreen extends Component {
-  state = {
+  constructor(props) {
+    super(props);
+    this.state = {
     query: '',
     searchedBooks: []
+    }
   }
-
 updateQuery = (query) => {
   this.setState({
     query: query
   })
   this.updateSearchedBooks(query);
+
 }
 
 updateSearchedBooks = (query) => {
@@ -40,14 +43,6 @@ updateSearchedBooks = (query) => {
         className="close-search"
         to='/'>Close</Link>
       <div className="search-books-input-wrapper">
-        {/*
-          NOTES: The search from BooksAPI is limited to a particular set of search terms.
-          You can find these search terms here:
-          https://github.com/udacity/reactnd-project-myreads-starter/blob/master/SEARCH_TERMS.md
-
-          However, remember that the BooksAPI.search method DOES search by title or author. So, don't worry if
-          you don't find a specific author or title. Every search is limited by search terms.
-        */}
         <input
         type="text"
         placeholder="Search by title or author"
@@ -59,14 +54,23 @@ updateSearchedBooks = (query) => {
     </div>
     <div className="search-books-results">
       <ol className="books-grid">
-        {
-          this.state.searchedBooks.map(searchedBook => (
-          <li key={searchedBook.id}>
-            <Book
-            book={searchedBook}
-            moveShelf={this.props.moveShelf}/>
-          </li>
-        ))
+        {this.state.searchedBooks.map(searchedBook => {
+            let shelf = 'none ';
+
+            this.props.books.map(book => {
+              book.id === searchedBook.id ?
+              shelf = book.shelf : ''
+            });
+            return (
+              <li key={searchedBook.id}>
+              <Book
+                book={searchedBook}
+                moveShelf={this.props.moveShelf}
+                currentShelf = {shelf}
+                />
+                </li>
+              );
+        })
       }
 
             {this.state.searchedBooks.length === 0 && <RecBooks />}

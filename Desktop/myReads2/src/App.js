@@ -5,6 +5,11 @@ import SearchScreen from './Views/SearchScreen';
 import HomeScreen from './Views/HomeScreen';
 import { Route } from 'react-router-dom';
 
+
+{/*Attributions:
+  Help from Maeva NAP and Forrest's walkthroughs on YouTube*/}
+
+
 class BooksApp extends React.Component {
   state = {
     books: []
