@@ -2,6 +2,7 @@ import React, {Component} from "react";
 import { Link } from 'react-router-dom';
 import * as BooksAPI from '../BooksAPI'
 import Book from '../Components/Book';
+import RecBooks from '../Components/RecBooks';
 
 class SearchScreen extends Component {
   state = {
@@ -68,6 +69,7 @@ updateSearchedBooks = (query) => {
         ))
       }
 
+            {this.state.searchedBooks.length === 0 && <RecBooks />}
       </ol>
 
     </div>

@@ -20,9 +20,9 @@ class HomeScreen extends Component {
                 {
                   this.props.books.filter(book => book.shelf === 'currentlyReading')
                   .map( book => (
-                    <li key={book.id}>
-                      <Book
-                        book={book}
+                    <li>
+                      <Book book={book}
+                        key={book.id}
                         moveShelf={this.props.moveShelf}
                         currentShelf='currentlyReading'
                       />
@@ -38,9 +38,10 @@ class HomeScreen extends Component {
                 <ol className="books-grid">
                 {
                   this.props.books.filter(book => book.shelf === 'wantToRead').map(book => (
-                    <li key={book.id}>
+                    <li>
                       <Book
-                      book={book}
+                      key={book.id}
+                        book={book}
                         moveShelf={this.props.moveShelf}
                         currentShelf='wantToRead'
                       />
@@ -57,13 +58,12 @@ class HomeScreen extends Component {
                 <ol className="books-grid">
                 {
                   this.props.books.filter(book => book.shelf === 'read').map(book => (
-                    <li key={book.id}>
-                      <Book
-                      book={book}
+                      <Book key={book.id}
+                        book={book}
                         moveShelf={this.props.moveShelf}
                         currentShelf='read'
                        />
-                    </li>
+
                   ))
                 }
                 </ol>
