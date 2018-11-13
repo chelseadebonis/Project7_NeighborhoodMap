@@ -1,113 +1,75 @@
 import React, { Component } from 'react';
 import './App.css';
-import axios from 'axios'
+import { load_google_maps } from './utils.js';
+import { load_places } from './utils.js';
 
 class App extends Component {
 
-  state = {
-    venues: []
+  constructor(props) {
+    super(props);
+    this.state = {
+      query: ''
+    }
   }
 
   componentDidMount() {
-    this.getVenues()
-  }
+    let googleMapsPromise = load_google_maps();
+    let placesPromise = load_places();
 
-  renderMap = () => {
-    loadScript("https://maps.googleapis.com/maps/api/js?key=AIzaSyBB0GNJz7JVts9FogqSIAghnGUOPdnDiOA&callback=initMap")
-    window.initMap = this.initMap
-  }
+    Promise.all([
+      googleMapsPromise,
+      placesPromise
+    ])
+    .then(values => {
+      let google = values[0];
+      let venues = values[1].response.venues;
 
-  getVenues = () => {
-    const endPoint = "https://api.foursquare.com/v2/venues/explore?"
-    const parameters = {
-      client_id: "20UNPXJ2EXJT2FJRRZTI4I1ZAOWID0GLZSHAHOSFIU3TAHPE",
-      client_secret: "KSBXW31GXQMD5PMAIPX5BAEQVT5YXX1SCEUGYK5HLMPGCL0E",
-      query: "pizza",
-      near: "Pittsburgh",
-      v: "20181211"
-    }
-
-
-    axios.get(endPoint + new URLSearchParams(parameters))
-    .then(response => {
-      this.setState ({
-        venues: response.data.response.groups[0].items
-      }, this.renderMap())
-    })
-    .catch(error => {
-      console.log("ERROR!" + error)
-    })
-  }
-
-  initMap = () => {
-//create a map
-      var map = new window.google.maps.Map(document.getElementById('map'), {
+      this.google = values
+      this.markers = [];
+      this.map = new google.maps.Map(document.getElementById('map'), {
          center: {lat: 40.440624, lng: -79.995888},
          zoom: 10
-       })
-//create an info window
-      var infowindow = new window.google.maps.InfoWindow();
+       });
+      this.infoWindow = new google.maps.InfoWindow();
 
-//display markers
-      this.state.venues.map(myVenue => {
-
-         var contentString = `${myVenue.venue.name}`
-
-
-//create a marker
-         var marker = new window.google.maps.Marker({
-            animation: window.google.maps.Animation.DROP,
-            position: {lat: myVenue.venue.location.lat , lng: myVenue.venue.location.lng},
-            map: map,
-            title: myVenue.venue.name
-          })
-
-        marker.addListener('click', toggleBounce);
-
-        function toggleBounce() {
-        if (marker.getAnimation() !== null) {
-          marker.setAnimation(null);
-        } else {
-          marker.setAnimation(window.google.maps.Animation.BOUNCE);
-        }
-      }
-
-//event listener for clicking markers
-        marker.addListener('click', function() {
-          //change the content
-              infowindow.setContent(contentString)
-
-          //Open window
-              infowindow.open(map, marker);
-       })
-    })
+      venues.forEach(venue => {
+        let marker = new google.maps.Marker({
+           animation: window.google.maps.Animation.DROP,
+           position: {lat: venue.location.lat , lng: venue.location.lng},
+           map: this.map,
+           venue: venue,
+           id: venue.id,
+           name: venue.name
+         });
+         this.markers.push(marker);
+      });
+    });
   }
 
+  filterVenues(query) {
+    //loop through markers and check if query matches input
+    //toLowerCase so user search case doesn't affect query
+    this.markers.forEach(marker => {
+      marker.name.toLowerCase().includes(query.toLowerCase()) == true ?
+      marker.setVisible(true) :
+      marker.setVisible(false);
+    });
+
+    this.setState({ query });
+  }
 
   render() {
     return (
     <main>
-    <div id="map"> </div>
+      <div id="map">
+
+      </div>
+      <div id="sidebar">
+        <input value={this.state.query} onChange={(e) => { this.filterVenues(e.target.value) }}/>
+      </div>
     </main>
-    )
+  );
   }
-}
-
-/*
-<script
-  src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap"
-   async defer>
-</script>
-
-*/
-
-function loadScript(url) {
-  const index = window.document.getElementsByTagName('script')[0]
-  const script = window.document.createElement('script')
-  script.src = url
-  script.async = true
-  script.defer = true
-  index.parentNode.insertBefore(script, index)
 }
 
 export default App;
