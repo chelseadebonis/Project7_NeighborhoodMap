@@ -1,4 +1,4 @@
-//load_google_maps function from Ryan Waite's coding walkthrough link: https://github.com/ryanwaite28/script-store/blob/master/js/react_resolve_google_maps.js
+//load_google_maps function from Ryan Waite's coding walkthrough link: https://github.com/ryanwaite28/script-store/blob/master/js/react_resolve_google_maps.js in order to use googleMaps directly
 export function load_google_maps() {
   return new Promise(function(resolve, reject) {
     // define the global callback that will run when google maps is loaded
@@ -17,9 +17,10 @@ export function load_google_maps() {
   });
 }
 
+//foursquare API
 export function load_places() {
   let city = 'Pittsburgh, PA';
   let query = 'pizza';
   var apiURL = 'https://api.foursquare.com/v2/venues/search?client_id=20UNPXJ2EXJT2FJRRZTI4I1ZAOWID0GLZSHAHOSFIU3TAHPE&client_secret=KSBXW31GXQMD5PMAIPX5BAEQVT5YXX1SCEUGYK5HLMPGCL0E&v=20181211%20&limit=50&near=' + city + '&query=' + query + '';
-  return fetch(apiURL).then(response => response.json())
+  return fetch(apiURL).then(response => response.json()).catch(() => alert('Error!'))
 }
